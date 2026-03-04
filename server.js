@@ -103,8 +103,11 @@ app.post('/api/export-odoo', async (req, res) => {
 const PORT = process.env.PORT || 3001;
 
 // Fallback para React Router (cualquier ruta que no sea /api/ va al index.html de React)
-app.get(/^(.*)$/, (req, res) => {
-    res.sendFile(path.join(__dirname, 'frontend/dist/index.html'));
+app.use((req, res, next) => {
+    if (req.path.startsWith('/api/')) return next();
+    res.sendFile(path.join(__dirname, 'frontend/dist/index.html'), err => {
+        if (err) res.status(404).send('Not Found: ' + err.message);
+    });
 });
 
 app.listen(PORT, () => {
