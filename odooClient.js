@@ -1,5 +1,5 @@
-import xmlrpc from 'xmlrpc';
-import dotenv from 'dotenv';
+const xmlrpc = require('xmlrpc');
+const dotenv = require('dotenv');
 dotenv.config();
 
 class OdooClient {
@@ -84,4 +84,4 @@ class OdooClient {
     }
 }
 
-export default new OdooClient();
+module.exports = new OdooClient();

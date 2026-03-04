@@ -1,13 +1,9 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import xmlrpc from 'xmlrpc';
-import { ApifyClient } from 'apify-client';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const express = require('express');
+const cors = require('cors');
+const dotenv = require('dotenv');
+const xmlrpc = require('xmlrpc');
+const { ApifyClient } = require('apify-client');
+const path = require('path');
 
 dotenv.config();
 
@@ -29,7 +25,7 @@ const odooUsername = process.env.ODOO_USERNAME;
 const odooPassword = process.env.ODOO_PASSWORD;
 
 // Import OdooClient
-import odooClient from './odooClient.js';
+const odooClient = require('./odooClient.js');
 
 app.get('/api/health', (req, res) => {
     res.json({ status: 'ok' });
@@ -107,7 +103,7 @@ app.post('/api/export-odoo', async (req, res) => {
 const PORT = process.env.PORT || 3001;
 
 // Fallback para React Router (cualquier ruta que no sea /api/ va al index.html de React)
-app.get('*', (req, res) => {
+app.get(/^(.*)$/, (req, res) => {
     res.sendFile(path.join(__dirname, 'frontend/dist/index.html'));
 });
 
