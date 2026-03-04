@@ -3,12 +3,20 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import xmlrpc from 'xmlrpc';
 import { ApifyClient } from 'apify-client';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// Servir la vista React compilada desde Plesk/hosting
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
 const apifyClient = new ApifyClient({
     token: process.env.APIFY_API_TOKEN,
@@ -97,6 +105,12 @@ app.post('/api/export-odoo', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3001;
+
+// Fallback para React Router (cualquier ruta que no sea /api/ va al index.html de React)
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+});
+
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
