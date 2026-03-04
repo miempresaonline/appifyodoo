@@ -53,7 +53,29 @@ class OdooClient {
         });
     }
 
-    async createPartner(leadData) {
+    async getMailingLists() {
+        if (!this.uid) await this.authenticate();
+
+        return new Promise((resolve, reject) => {
+            // Buscamos todas las listas de correo activas en el módulo de Email Marketing
+            this.objectClient.methodCall('execute_kw', [
+                this.db, this.uid, this.password,
+                'mailing.list', 'search_read',
+                [[['active', '=', true]]],
+                { fields: ['id', 'name'], limit: 100 }
+            ], (error, value) => {
+                if (error) {
+                    console.error("Error obteniendo listas de correo de Odoo:", error);
+                    reject(error);
+                } else {
+                    console.log(`Obtenidas ${value.length} listas de correo de Odoo.`);
+                    resolve(value);
+                }
+            });
+        });
+    }
+
+    async createPartner(leadData, mailingListId = null) {
         if (!this.uid) await this.authenticate();
 
         return new Promise((resolve, reject) => {
@@ -71,14 +93,39 @@ class OdooClient {
                 this.db, this.uid, this.password,
                 'res.partner', 'create',
                 [partnerData]
-            ], (error, value) => {
+            ], (error, partnerId) => {
                 if (error) {
                     console.error("Error creando lead en Odoo:", error);
-                    reject(error);
-                } else {
-                    console.log("Lead creado en Odoo con ID:", value);
-                    resolve(value);
+                    return reject(error);
                 }
+                console.log("Lead creado en Odoo con ID:", partnerId);
+
+                // Si no hay lista de correo o no hay email, terminamos aquí
+                if (!mailingListId || !leadData.email) {
+                    return resolve(partnerId);
+                }
+
+                // Si hay lista de correo y email, lo suscribimos a la lista en mailing.contact
+                const mailingContactData = {
+                    name: leadData.nombre,
+                    email: leadData.email,
+                    list_ids: [[4, parseInt(mailingListId), 0]], // Odoo ORM trick: Link to existing related records
+                };
+
+                this.objectClient.methodCall('execute_kw', [
+                    this.db, this.uid, this.password,
+                    'mailing.contact', 'create',
+                    [mailingContactData]
+                ], (mailError, mailContactId) => {
+                    if (mailError) {
+                        console.error(`Error suscribiendo a lista ${mailingListId}:`, mailError);
+                        // Resolvemos igualmente el partnerId porque el partner SÍ se creó
+                        resolve(partnerId);
+                    } else {
+                        console.log(`Contacto suscrito a la lista ${mailingListId} con ID: ${mailContactId}`);
+                        resolve(partnerId);
+                    }
+                });
             });
         });
     }

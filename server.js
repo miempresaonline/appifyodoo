@@ -53,7 +53,12 @@ app.post('/api/scrape', async (req, res) => {
             language: 'es',
             maxImages: 0,
             maxReviews: 0,
-            scrapeContactDetails: true // Este parámetro es común en extractores avanzados
+            scrapeContactDetails: true,
+            extractContactsFromWebsites: true, // Esto obliga al scraper a entrar en la web y buscar emails
+            websiteContactParams: {
+                extractEmails: true,
+                extractPhones: true
+            }
         });
 
         console.log(`Scrape finalizado. Descargando dataset... (Run ID: ${run.id})`);
@@ -75,19 +80,29 @@ app.post('/api/scrape', async (req, res) => {
     }
 });
 
+app.get('/api/odoo/mailing-lists', async (req, res) => {
+    try {
+        const lists = await odooClient.getMailingLists();
+        res.json(lists);
+    } catch (error) {
+        console.error('Error in /api/odoo/mailing-lists:', error);
+        res.status(500).json({ error: 'Failed to fetch mailing lists' });
+    }
+});
+
 app.post('/api/export-odoo', async (req, res) => {
     try {
-        const { leads } = req.body;
+        const { leads, mailingListId } = req.body;
         if (!leads || !Array.isArray(leads)) {
             return res.status(400).json({ error: 'Formato de leads incorrecto' });
         }
 
-        console.log(`Iniciando exportación de ${leads.length} leads a Odoo...`);
+        console.log(`Iniciando exportación de ${leads.length} leads a Odoo... (Lista: ${mailingListId || 'Ninguna'})`);
         const results = [];
 
         for (const lead of leads) {
             try {
-                const partnerId = await odooClient.createPartner(lead);
+                const partnerId = await odooClient.createPartner(lead, mailingListId);
                 results.push({ ...lead, odoo_id: partnerId, status: 'success' });
             } catch (err) {
                 results.push({ ...lead, error: err.message || 'Error en Odoo', status: 'failed' });

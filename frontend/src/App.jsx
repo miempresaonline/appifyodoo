@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Search, Loader2, Send, Download, Phone, Mail, Globe, MapPin, Database } from 'lucide-react';
+import { Search, Loader2, Send, Download, Phone, Mail, Globe, Database, ListPlus } from 'lucide-react';
 import Papa from 'papaparse';
 
 const API_URL = 'http://localhost:3001/api';
@@ -12,6 +12,21 @@ function App() {
   const [isExporting, setIsExporting] = useState(false);
   const [leads, setLeads] = useState([]);
   const [message, setMessage] = useState('');
+  const [mailingLists, setMailingLists] = useState([]);
+  const [selectedListId, setSelectedListId] = useState('');
+
+  // Cargar listas de correo al montar el componente
+  useEffect(() => {
+    const fetchMailingLists = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/odoo/mailing-lists`);
+        setMailingLists(response.data || []);
+      } catch (error) {
+        console.error('Error cargando listas de correo:', error);
+      }
+    };
+    fetchMailingLists();
+  }, []);
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -37,7 +52,7 @@ function App() {
     setMessage(`⏳ Exportando ${leads.length} leads a Odoo...`);
 
     try {
-      const response = await axios.post(`${API_URL}/export-odoo`, { leads });
+      const response = await axios.post(`${API_URL}/export-odoo`, { leads, mailingListId: selectedListId });
       const results = response.data.results || [];
       const successCount = results.filter(r => r.status === 'success').length;
 
@@ -132,7 +147,7 @@ function App() {
               <h2 style={{ fontSize: '1.5rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Database size={24} color="var(--accent-color)" /> Leads Encontrados ({leads.length})
               </h2>
-              <div style={{ display: 'flex', gap: '12px' }}>
+              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
                 <button
                   onClick={exportCSV}
                   className="custom-button"
@@ -140,6 +155,22 @@ function App() {
                 >
                   <Download size={18} /> CSV
                 </button>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0,0,0,0.2)', padding: '4px 8px 4px 12px', borderRadius: '8px' }}>
+                  <ListPlus size={16} color="var(--text-secondary)" />
+                  <select
+                    className="custom-input"
+                    style={{ padding: '6px 32px 6px 12px', height: 'auto', minWidth: '150px', border: 'none', background: 'transparent', fontSize: '0.9rem' }}
+                    value={selectedListId}
+                    onChange={(e) => setSelectedListId(e.target.value)}
+                  >
+                    <option value="">Añadir a lista...</option>
+                    {mailingLists.map(list => (
+                      <option key={list.id} value={list.id}>{list.name}</option>
+                    ))}
+                  </select>
+                </div>
+
                 <button
                   onClick={handleExportOdoo}
                   className="custom-button"
