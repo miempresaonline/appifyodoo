@@ -12,7 +12,8 @@ app.use(cors());
 app.use(express.json());
 
 // Servir la vista React compilada desde Plesk/hosting
-app.use(express.static(path.join(__dirname, 'frontend/dist')));
+// Passenger a veces cambia el cwd, confiamos en __dirname siempre
+app.use(express.static(path.join(__dirname, 'frontend', 'dist')));
 
 const apifyClient = new ApifyClient({
     token: process.env.APIFY_API_TOKEN,
@@ -105,8 +106,9 @@ const PORT = process.env.PORT || 3001;
 // Fallback para React Router (cualquier ruta que no sea /api/ va al index.html de React)
 app.use((req, res, next) => {
     if (req.path.startsWith('/api/')) return next();
-    res.sendFile(path.join(__dirname, 'frontend/dist/index.html'), err => {
-        if (err) res.status(404).send('Not Found: ' + err.message);
+    const indexPath = path.join(__dirname, 'frontend', 'dist', 'index.html');
+    res.sendFile(indexPath, err => {
+        if (err) res.status(404).send('Not Found: ' + err.message + ' at ' + indexPath);
     });
 });
 
