@@ -55,6 +55,7 @@ app.post('/api/scrape', async (req, res) => {
             maxReviews: 0,
             scrapeContactDetails: true,
             extractContactsFromWebsites: true, // Esto obliga al scraper a entrar en la web y buscar emails
+            maxPagesPerWebsite: 3, // Límite estricto de seguridad sugerido: páginas de inicio, contacto y quizás una más.
             websiteContactParams: {
                 extractEmails: true,
                 extractPhones: true
