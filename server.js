@@ -39,7 +39,9 @@ app.get('/api/health', (req, res) => {
     res.json({ status: 'ok' });
 });
 
-// Todo: implement scraping logic
+// Memoria temporal para trabajos en segundo plano
+const jobs = {};
+
 app.post('/api/scrape', async (req, res) => {
     try {
         const { query, maxResults = 10 } = req.body;
@@ -48,73 +50,107 @@ app.post('/api/scrape', async (req, res) => {
             return res.status(400).json({ error: 'Configura APIFY_API_TOKEN en el .env del backend' });
         }
 
-        console.log(`Iniciando scrape para: ${query}`);
+        const jobId = Math.random().toString(36).substring(2, 15);
+        jobs[jobId] = { status: 'processing', progress: 0, leads: [], error: null };
 
-        // Usamos un actor genérico de Maps que también suele buscar emails (ej: jupri/google-maps o similar, 
-        // aquí ponemos uno oficial o popular. Vamos a usar compass/google-maps-extractor)
-        const actorId = 'compass/google-maps-extractor';
+        // Devolvemos respuesta inmediatamente para no bloquear a Nginx
+        res.json({ message: 'Scraping en segundo plano iniciado', jobId });
 
-        const run = await apifyClient.actor(actorId).call({
-            searchStringsArray: [query],
-            maxCrawledPlacesPerSearch: parseInt(maxResults),
-            language: 'es',
-            maxImages: 0,
-            maxReviews: 0,
-            scrapeContactDetails: true,
-            scrapeContacts: true, // Esto enriquece los resultados con emails y redes de la web oficial
-        });
+        console.log(`[Job ${jobId}] Iniciando scrape asincrónico para: ${query}`);
 
-        console.log(`Scrape finalizado. Descargando dataset... (Run ID: ${run.id})`);
-        const { items } = await apifyClient.dataset(run.defaultDatasetId).listItems();
+        // Función auto-ejecutable en background
+        (async () => {
+            try {
+                // Usamos un actor genérico de Maps
+                const actorId = 'compass/google-maps-extractor';
 
-        // Limpiar y mapear la data. También realizamos un scraping súper rápido interno para cazar emails.
-        const axios = require('axios');
-        const cheerio = require('cheerio');
+                const run = await apifyClient.actor(actorId).call({
+                    searchStringsArray: [query],
+                    maxCrawledPlacesPerSearch: parseInt(maxResults),
+                    language: 'es',
+                    maxImages: 0,
+                    maxReviews: 0,
+                    scrapeContactDetails: true,
+                    scrapeContacts: true
+                });
 
-        const leads = await Promise.all(items.map(async item => {
-            let email = item.email || item.emails?.[0] || '';
-            const web = item.website || item.url || '';
+                console.log(`[Job ${jobId}] Scrape finalizado. Descargando dataset... (Run ID: ${run.id})`);
+                const { items } = await apifyClient.dataset(run.defaultDatasetId).listItems();
 
-            // Si el actor de Apify no devolvió email (muy común en Google Maps bots), lo scrapeamos nosotros mismos:
-            if (!email && web) {
-                try {
-                    const siteRes = await axios.get(web, { timeout: 3500, headers: { 'User-Agent': 'Mozilla/5.0' } });
-                    const $ = cheerio.load(siteRes.data);
-                    const text = $('body').text();
-                    const mailto = $('a[href^="mailto:"]').first().attr('href');
-                    if (mailto) {
-                        email = mailto.replace('mailto:', '').split('?')[0].trim();
-                    } else {
-                        // Regex simple para emails
-                        const emailMatches = text.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/gi);
-                        if (emailMatches && emailMatches.length > 0) {
-                            // Coger el primero válido que no parezca archivo (ej. jpg@2x no)
-                            const validEmails = emailMatches.filter(e => !e.endsWith('.jpg') && !e.endsWith('.png'));
-                            if (validEmails.length > 0) email = validEmails[0];
+                // Limpiar y mapear la data. También realizamos un scraping súper rápido interno para cazar emails.
+                const axios = require('axios');
+                const cheerio = require('cheerio');
+
+                let processed = 0;
+
+                const leads = await Promise.all(items.map(async item => {
+                    let email = item.email || item.emails?.[0] || '';
+                    const web = item.website || item.url || '';
+
+                    // Actualizar el progreso (aproximado, no bloquea)
+                    processed++;
+                    jobs[jobId].progress = Math.floor((processed / items.length) * 100);
+
+                    if (!email && web) {
+                        try {
+                            const siteRes = await axios.get(web, { timeout: 3500, headers: { 'User-Agent': 'Mozilla/5.0' } });
+                            const $ = cheerio.load(siteRes.data);
+                            const text = $('body').text();
+                            const mailto = $('a[href^="mailto:"]').first().attr('href');
+                            if (mailto) {
+                                email = mailto.replace('mailto:', '').split('?')[0].trim();
+                            } else {
+                                // Regex simple para emails
+                                const emailMatches = text.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/gi);
+                                if (emailMatches && emailMatches.length > 0) {
+                                    // Coger el primero válido que no parezca archivo (ej. jpg@2x no)
+                                    const validEmails = emailMatches.filter(e => !e.endsWith('.jpg') && !e.endsWith('.png'));
+                                    if (validEmails.length > 0) email = validEmails[0];
+                                }
+                            }
+                        } catch (e) {
+                            // Ignorar errores de timeout o web caída
                         }
                     }
-                } catch (e) {
-                    // Ignorar errores de timeout o web caída
-                }
+
+                    return {
+                        id: item.placeId || Math.random().toString(36).substring(7),
+                        nombre: item.title || item.name || '',
+                        telefono: item.phone || item.phoneUnformatted || '',
+                        email: email,
+                        web: web
+                    };
+                }));
+
+                // Filtrar solo los que tienen nombre
+                const finalLeads = leads.filter(lead => lead.nombre);
+
+                jobs[jobId].status = 'done';
+                jobs[jobId].leads = finalLeads;
+                console.log(`[Job ${jobId}] Búsqueda finalizada con ${finalLeads.length} leads validos`);
+            } catch (error) {
+                console.error(`[Job ${jobId}] Error:`, error);
+                jobs[jobId].status = 'error';
+                jobs[jobId].error = error.message || 'Error en segundo plano';
             }
-
-            return {
-                id: item.placeId || Math.random().toString(36).substring(7),
-                nombre: item.title || item.name || '',
-                telefono: item.phone || item.phoneUnformatted || '',
-                email: email,
-                web: web
-            };
-        }));
-
-        // Filtrar solo los que tienen nombre
-        const finalLeads = leads.filter(lead => lead.nombre);
-
-
-        res.json({ message: 'Scraping completado', leads: finalLeads });
+        })();
     } catch (error) {
-        console.error('Error in /api/scrape:', error);
+        console.error('Error starting /api/scrape:', error);
         res.status(500).json({ error: error.message || 'Failed to start scraping' });
+    }
+});
+
+app.get('/api/scrape/status/:jobId', (req, res) => {
+    const job = jobs[req.params.jobId];
+    if (!job) return res.status(404).json({ error: 'Trabajo no encontrado' });
+
+    // Devolver el estado actual
+    res.json(job);
+
+    // Limpiar memoria si ya terminó para no saturar el servidor
+    if (job.status === 'done' || job.status === 'error') {
+        // give frontend a couple minutes to fetch before deleting
+        setTimeout(() => delete jobs[req.params.jobId], 5 * 60 * 1000);
     }
 });
 

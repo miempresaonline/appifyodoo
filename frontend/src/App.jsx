@@ -33,15 +33,47 @@ function App() {
     if (!query) return;
 
     setIsScraping(true);
-    setMessage('🚀 Iniciando scraping en Apify... Esto puede tomar de 1 a 3 minutos.');
+    setMessage('🚀 Iniciando scraping en Apify... (Progreso: 0%)');
+    setLeads([]);
+
     try {
-      const response = await axios.post(`${API_URL}/scrape`, { query, maxResults });
-      setLeads(response.data.leads || []);
-      setMessage(`✅ Scraping completado. Encontrados ${response.data.leads?.length} leads.`);
+      const startRes = await axios.post(`${API_URL}/scrape`, { query, maxResults });
+      const jobId = startRes.data.jobId;
+
+      if (!jobId) {
+        throw new Error("No se recibió un JobID del backend");
+      }
+
+      // Función recursiva para sondear
+      const poll = async () => {
+        try {
+          const statusRes = await axios.get(`${API_URL}/scrape/status/${jobId}`);
+          const job = statusRes.data;
+
+          if (job.status === 'processing') {
+            setMessage(`🚀 Scrapeando en segundo plano... (Progreso Apify/Cheerio: ${job.progress || 0}%)`);
+            setTimeout(poll, 4000); // Sondear cada 4 segundos
+          } else if (job.status === 'done') {
+            setLeads(job.leads || []);
+            setMessage(`✅ Scraping completado. Encontrados ${job.leads?.length} leads.`);
+            setIsScraping(false);
+          } else if (job.status === 'error') {
+            setMessage(`❌ Error al scrapear en segundo plano: ${job.error}`);
+            setIsScraping(false);
+          }
+        } catch (pollErr) {
+          console.error(pollErr);
+          setMessage(`❌ Error de conexión sondeando el progreso... reintentando.`);
+          setTimeout(poll, 6000);
+        }
+      };
+
+      // Iniciar el sondeo
+      setTimeout(poll, 3000);
+
     } catch (error) {
       console.error(error);
-      setMessage(`❌ Error al scrapear: ${error.response?.data?.error || error.message}`);
-    } finally {
+      setMessage(`❌ Error al iniciar scrape: ${error.response?.data?.error || error.message}`);
       setIsScraping(false);
     }
   };
