@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Search, Loader2, Send, Download, Phone, Mail, Globe, Database, ListPlus } from 'lucide-react';
 import Papa from 'papaparse';
 
-const API_URL = import.meta.env.PROD ? '/api' : 'http://localhost:3001/api';
+const API_URL = window.location.origin + '/api';
 
 function App() {
   const [query, setQuery] = useState('');
