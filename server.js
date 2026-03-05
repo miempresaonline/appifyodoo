@@ -11,9 +11,15 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Servir la vista React compilada desde Plesk/hosting
-// Passenger a veces cambia el cwd, confiamos en __dirname siempre
-app.use(express.static(path.join(__dirname, 'frontend', 'dist')));
+app.use(express.static(path.join(__dirname, 'frontend', 'dist'), {
+    setHeaders: (res, path) => {
+        if (path.endsWith('.js')) {
+            res.setHeader('Content-Type', 'application/javascript');
+        } else if (path.endsWith('.css')) {
+            res.setHeader('Content-Type', 'text/css');
+        }
+    }
+}));
 
 const apifyClient = new ApifyClient({
     token: process.env.APIFY_API_TOKEN,
