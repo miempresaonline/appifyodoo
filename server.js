@@ -11,11 +11,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use(express.static(path.join(__dirname, 'frontend', 'dist'), {
-    setHeaders: (res, path) => {
-        if (path.endsWith('.js')) {
+// Servir la vista React compilada
+app.use(express.static(path.join(__dirname, 'public'), {
+    setHeaders: (res, filePath) => {
+        if (filePath.endsWith('.js')) {
             res.setHeader('Content-Type', 'application/javascript');
-        } else if (path.endsWith('.css')) {
+        } else if (filePath.endsWith('.css')) {
             res.setHeader('Content-Type', 'text/css');
         }
     }
@@ -128,7 +129,7 @@ const PORT = process.env.PORT || 3001;
 // Fallback para React Router (cualquier ruta que no sea /api/ va al index.html de React)
 app.use((req, res, next) => {
     if (req.path.startsWith('/api/')) return next();
-    const indexPath = path.join(__dirname, 'frontend', 'dist', 'index.html');
+    const indexPath = path.join(__dirname, 'public', 'index.html');
     res.sendFile(indexPath, err => {
         if (err) res.status(404).send('Not Found: ' + err.message + ' at ' + indexPath);
     });
