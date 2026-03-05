@@ -1,0 +1,195 @@
+{ quiet: true }
+Running Apify...
+[36mgoogle-maps-extractor runId:ZimQFrencEguncPSG -> [39m2026-03-05T20:29:36.115Z ACTOR: Pulling container image of build 4zJuVElsZDnsr2of5 from registry.
+[36mgoogle-maps-extractor runId:ZimQFrencEguncPSG -> [39m2026-03-05T20:29:36.117Z ACTOR: Creating container.
+[36mgoogle-maps-extractor runId:ZimQFrencEguncPSG -> [39m2026-03-05T20:29:36.156Z ACTOR: Starting container.
+[36mgoogle-maps-extractor runId:ZimQFrencEguncPSG -> [39m2026-03-05T20:29:36.156Z ACTOR: Running under "LIMITED_PERMISSIONS" permission level.
+[36mgoogle-maps-extractor runId:ZimQFrencEguncPSG -> [39m2026-03-05T20:29:37.481Z [32mINFO[39m  System info[90m {"apifyVersion":"3.5.1","apifyClientVersion":"2.19.0","crawleeVersion":"3.14.1","osType":"Linux","nodeVersion":"v18.20.8"}[39m
+[36mgoogle-maps-extractor runId:ZimQFrencEguncPSG -> [39m2026-03-05T20:29:37.892Z [32mINFO[39m  ­ƒôí Geolocation started
+[36mgoogle-maps-extractor runId:ZimQFrencEguncPSG -> [39m2026-03-05T20:29:37.915Z [32mINFO[39m  ­ƒôí Geolocation finished
+[36mgoogle-maps-extractor runId:ZimQFrencEguncPSG -> [39m2026-03-05T20:29:37.999Z [32mINFO[39m  [BG ENQUEUE] Finished enqueueing
+[36mgoogle-maps-extractor runId:ZimQFrencEguncPSG -> [39m2026-03-05T20:29:38.167Z [32mINFO[39m [33m HttpCrawler:[39m Starting the crawler.
+[36mgoogle-maps-extractor runId:ZimQFrencEguncPSG -> [39m2026-03-05T20:29:48.167Z [32mINFO[39m  Scraped in total 0 search pages.
+[36mgoogle-maps-extractor runId:ZimQFrencEguncPSG -> [39m2026-03-05T20:29:56.326Z [32mINFO[39m  [CONSENT SCREEN] https://www.google.com/maps/search/Core%20Energia%20Alicante?hl=es
+[36mgoogle-maps-extractor runId:ZimQFrencEguncPSG -> [39m2026-03-05T20:29:56.326Z [32mINFO[39m  [CONSENT SCREEN] found bl: boq_identityfrontenduiserver_20260304.05_p0
+[36mgoogle-maps-extractor runId:ZimQFrencEguncPSG -> [39m2026-03-05T20:29:58.089Z [32mINFO[39m  [Status message]: You can check all currently scraped places laid out on a map on: https://api.apify.com/v2/key-value-stores/mcbuTrEigl6ZK6vck/records/results-map?signature=9rwxJGK8cTmdcGM4QKWd
+[36mgoogle-maps-extractor runId:ZimQFrencEguncPSG -> [39m2026-03-05T20:29:58.167Z [32mINFO[39m  Scraped in total 0 search pages.
+[36mgoogle-maps-extractor runId:ZimQFrencEguncPSG -> [39m2026-03-05T20:30:08.167Z [32mINFO[39m  Scraped in total 0 search pages.
+[36mgoogle-maps-extractor runId:ZimQFrencEguncPSG -> [39m2026-03-05T20:30:18.166Z [32mINFO[39m  Scraped in total 0 search pages.
+[36mgoogle-maps-extractor runId:ZimQFrencEguncPSG -> [39m2026-03-05T20:30:28.167Z [32mINFO[39m  Scraped in total 0 search pages.
+[36mgoogle-maps-extractor runId:ZimQFrencEguncPSG -> [39m2026-03-05T20:30:30.128Z [32mINFO[39m  [Status message]: Finishing scraping because we reached max results --- https://www.google.com/maps/search/Core%20Energia%20Alicante?hl=es
+[36mgoogle-maps-extractor runId:ZimQFrencEguncPSG -> [39m2026-03-05T20:30:35.170Z [32mINFO[39m  ­ƒöì [Core Energia Alicante][64.5588|17.7099][SCROLL: 1]: Search page scraped: 1 unique, 1 seen, 1 paginations. No more places found on this page. (no next cursor) --- https://www.google.com/maps/search/Core%20Energia%20Alicante?hl=es
+[36mgoogle-maps-extractor runId:ZimQFrencEguncPSG -> [39m2026-03-05T20:30:35.242Z [32mINFO[39m [33m HttpCrawler:[39m Final request statistics:[90m {"requestsFinished":1,"requestsFailed":0,"retryHistogram":[1],"requestAvgFailedDurationMillis":null,"requestAvgFinishedDurationMillis":57008,"requestsFinishedPerMinute":1,"requestsFailedPerMinute":0,"requestTotalDurationMillis":57008,"requestsTotal":1,"crawlerRuntimeMillis":57296}[39m
+[36mgoogle-maps-extractor runId:ZimQFrencEguncPSG -> [39m2026-03-05T20:30:35.243Z [32mINFO[39m [33m HttpCrawler:[39m Finished! Total 1 requests: 1 succeeded, 0 failed.[90m {"terminal":true}[39m
+[36mgoogle-maps-extractor runId:ZimQFrencEguncPSG -> [39m2026-03-05T20:30:35.378Z [32mINFO[39m  ­ƒôè 1 places scraped | unique: 1 | seen: 1 | searchPages: 1 | paginations: 1
+[36mgoogle-maps-extractor runId:ZimQFrencEguncPSG -> [39m2026-03-05T20:30:35.420Z [32mINFO[39m  ­ƒôè 1 places scraped | unique: 1 | seen: 1 | searchPages: 1 | paginations: 1
+[36mgoogle-maps-extractor runId:ZimQFrencEguncPSG -> [39m2026-03-05T20:30:35.421Z [32mINFO[39m  [Status message]: Scraping finished. You can view all scraped places laid out on a map on: https://api.apify.com/v2/key-value-stores/mcbuTrEigl6ZK6vck/records/results-map?signature=9rwxJGK8cTmdcGM4QKWd. It can take some time to fully load for large datasets.
+Fetching dataset...
+{
+  "title": "Core Energia",
+  "price": null,
+  "categoryName": "Proveedor de equipos de energ├¡a solar",
+  "address": "C. Clara Campoamor, 14 - 4, 03540 Alicante, Espa├▒a",
+  "neighborhood": null,
+  "street": "C. Clara Campoamor, 14 - 4",
+  "city": "Alicante",
+  "postalCode": "03540",
+  "state": "Alicante",
+  "countryCode": "ES",
+  "website": "https://corenergia.com/",
+  "phone": "+34 622 78 56 72",
+  "phoneUnformatted": "+34622785672",
+  "claimThisBusiness": false,
+  "location": {
+    "lat": 38.3797532,
+    "lng": -0.4286145
+  },
+  "plusCode": "9HHC+WH Alicante (Alacant), Espa├▒a",
+  "totalScore": 5,
+  "permanentlyClosed": false,
+  "temporarilyClosed": false,
+  "placeId": "ChIJq3GA01Y5Yg0RAWZjYPexU9Y",
+  "categories": [
+    "Proveedor de equipos de energ├¡a solar"
+  ],
+  "fid": "0xd623956d38071ab:0xd653b1f760636601",
+  "cid": "15443883223215728129",
+  "reviewsCount": 42,
+  "reviewsDistribution": {
+    "oneStar": 0,
+    "twoStar": 0,
+    "threeStar": 0,
+    "fourStar": 0,
+    "fiveStar": 42
+  },
+  "imagesCount": 48,
+  "imageCategories": [
+    "Todas",
+    "Del propietario",
+    "Street┬áView y 360┬░"
+  ],
+  "scrapedAt": "2026-03-05T20:30:30.043Z",
+  "googleFoodUrl": null,
+  "hotelAds": [],
+  "openingHours": [
+    {
+      "day": "jueves",
+      "hours": "8ÔÇ»AM to 9ÔÇ»PM"
+    },
+    {
+      "day": "viernes",
+      "hours": "8ÔÇ»AM to 9ÔÇ»PM"
+    },
+    {
+      "day": "s├íbado",
+      "hours": "9ÔÇ»AM to 5ÔÇ»PM"
+    },
+    {
+      "day": "domingo",
+      "hours": "Cerrado"
+    },
+    {
+      "day": "lunes",
+      "hours": "8ÔÇ»AM to 9ÔÇ»PM"
+    },
+    {
+      "day": "martes",
+      "hours": "8ÔÇ»AM to 9ÔÇ»PM"
+    },
+    {
+      "day": "mi├®rcoles",
+      "hours": "8ÔÇ»AM to 9ÔÇ»PM"
+    }
+  ],
+  "peopleAlsoSearch": [
+    {
+      "category": "Tambi├®n se busc├│",
+      "title": "EsTuLuz",
+      "reviewsCount": 30,
+      "totalScore": 4.9
+    },
+    {
+      "category": "Tambi├®n se busc├│",
+      "title": "Solar Works Instalaciones Placas Solares",
+      "reviewsCount": 66,
+      "totalScore": 4.6
+    },
+    {
+      "category": "Tambi├®n se busc├│",
+      "title": "Solarea TECH",
+      "reviewsCount": 136,
+      "totalScore": 5
+    },
+    {
+      "category": "Tambi├®n se busc├│",
+      "title": "Luzentum",
+      "reviewsCount": 117,
+      "totalScore": 5
+    },
+    {
+      "category": "Tambi├®n se busc├│",
+      "title": "Solar Nature",
+      "reviewsCount": 24,
+      "totalScore": 3.7
+    }
+  ],
+  "placesTags": [],
+  "reviewsTags": [
+    {
+      "title": "instalaci├│n",
+      "count": 10
+    },
+    {
+      "title": "precio",
+      "count": 7
+    },
+    {
+      "title": "placas solares",
+      "count": 5
+    },
+    {
+      "title": "necesidades",
+      "count": 4
+    },
+    {
+      "title": "responsables",
+      "count": 3
+    },
+    {
+      "title": "eficiente",
+      "count": 3
+    },
+    {
+      "title": "subvenciones",
+      "count": 2
+    },
+    {
+      "title": "2021",
+      "count": 2
+    },
+    {
+      "title": "vivienda",
+      "count": 2
+    },
+    {
+      "title": "gesti├│n",
+      "count": 2
+    }
+  ],
+  "additionalInfo": {
+    "Accesibilidad": [
+      {
+        "Entrada accesible para personas en silla de ruedas": true
+      }
+    ]
+  },
+  "gasPrices": [],
+  "url": "https://www.google.com/maps/search/?api=1&query=Core%20Energia&query_place_id=ChIJq3GA01Y5Yg0RAWZjYPexU9Y",
+  "searchPageUrl": "https://www.google.com/maps/search/Core%20Energia%20Alicante?hl=es",
+  "searchString": "Core Energia Alicante",
+  "language": "es",
+  "rank": 1,
+  "isAdvertisement": false,
+  "imageUrl": "https://lh3.googleusercontent.com/gps-cs-s/AHVAwepkDSpwAnhd3hwcnrbS3sY3o49_AQDcI5FofBklqhEx5LhFh1B9vXsmrfgO-TB2l_ZPmbVtBNnWa9jgZ-r917pQziat3rDE7hldGFN-GJ9elLTLBJm3PyyhcQtyhsU1-dxWnaeF=w408-h301-k-no",
+  "kgmid": "/g/11gyyzz8d9"
+}

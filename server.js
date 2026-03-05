@@ -61,27 +61,57 @@ app.post('/api/scrape', async (req, res) => {
             maxImages: 0,
             maxReviews: 0,
             scrapeContactDetails: true,
-            extractContactsFromWebsites: true, // Esto obliga al scraper a entrar en la web y buscar emails
-            maxPagesPerWebsite: 3, // Límite estricto de seguridad sugerido: páginas de inicio, contacto y quizás una más.
-            websiteContactParams: {
-                extractEmails: true,
-                extractPhones: true
-            }
+            scrapeContacts: true, // Esto enriquece los resultados con emails y redes de la web oficial
         });
 
         console.log(`Scrape finalizado. Descargando dataset... (Run ID: ${run.id})`);
         const { items } = await apifyClient.dataset(run.defaultDatasetId).listItems();
 
-        // Limpiar y mapear la data
-        const leads = items.map(item => ({
-            id: item.placeId || Math.random().toString(36).substring(7),
-            nombre: item.title || item.name || '',
-            telefono: item.phone || item.phoneUnformatted || '',
-            email: item.email || item.emails?.[0] || '',
-            web: item.website || item.url || ''
-        })).filter(lead => lead.nombre); // Solo si tiene nombre
+        // Limpiar y mapear la data. También realizamos un scraping súper rápido interno para cazar emails.
+        const axios = require('axios');
+        const cheerio = require('cheerio');
 
-        res.json({ message: 'Scraping completado', leads });
+        const leads = await Promise.all(items.map(async item => {
+            let email = item.email || item.emails?.[0] || '';
+            const web = item.website || item.url || '';
+
+            // Si el actor de Apify no devolvió email (muy común en Google Maps bots), lo scrapeamos nosotros mismos:
+            if (!email && web) {
+                try {
+                    const siteRes = await axios.get(web, { timeout: 3500, headers: { 'User-Agent': 'Mozilla/5.0' } });
+                    const $ = cheerio.load(siteRes.data);
+                    const text = $('body').text();
+                    const mailto = $('a[href^="mailto:"]').first().attr('href');
+                    if (mailto) {
+                        email = mailto.replace('mailto:', '').split('?')[0].trim();
+                    } else {
+                        // Regex simple para emails
+                        const emailMatches = text.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/gi);
+                        if (emailMatches && emailMatches.length > 0) {
+                            // Coger el primero válido que no parezca archivo (ej. jpg@2x no)
+                            const validEmails = emailMatches.filter(e => !e.endsWith('.jpg') && !e.endsWith('.png'));
+                            if (validEmails.length > 0) email = validEmails[0];
+                        }
+                    }
+                } catch (e) {
+                    // Ignorar errores de timeout o web caída
+                }
+            }
+
+            return {
+                id: item.placeId || Math.random().toString(36).substring(7),
+                nombre: item.title || item.name || '',
+                telefono: item.phone || item.phoneUnformatted || '',
+                email: email,
+                web: web
+            };
+        }));
+
+        // Filtrar solo los que tienen nombre
+        const finalLeads = leads.filter(lead => lead.nombre);
+
+
+        res.json({ message: 'Scraping completado', leads: finalLeads });
     } catch (error) {
         console.error('Error in /api/scrape:', error);
         res.status(500).json({ error: error.message || 'Failed to start scraping' });

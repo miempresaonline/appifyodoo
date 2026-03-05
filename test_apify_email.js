@@ -9,18 +9,13 @@ async function main() {
     const actorId = 'compass/google-maps-extractor';
     console.log('Running Apify...');
     const run = await client.actor(actorId).call({
-        searchStringsArray: ['Core Energia Alicante'],
+        searchStringsArray: ['E-AVE Instalación de Placas Solares en Alicante'],
         maxCrawledPlacesPerSearch: 1,
         language: 'es',
         maxImages: 0,
         maxReviews: 0,
         scrapeContactDetails: true,
-        extractContactsFromWebsites: true,
-        maxPagesPerWebsite: 3,
-        websiteContactParams: {
-            extractEmails: true,
-            extractPhones: true
-        }
+        scrapeContacts: true
     });
     console.log('Fetching dataset...');
     const { items } = await client.dataset(run.defaultDatasetId).listItems();

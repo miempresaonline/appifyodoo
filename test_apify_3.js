@@ -6,7 +6,7 @@ const client = new ApifyClient({
 });
 
 async function main() {
-    const actorId = 'compass/google-maps-extractor';
+    const actorId = 'apify/google-maps-scraper';
     console.log('Running Apify...');
     const run = await client.actor(actorId).call({
         searchStringsArray: ['Core Energia Alicante'],

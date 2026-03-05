@@ -100,30 +100,93 @@ class OdooClient {
                 }
                 console.log("Lead creado en Odoo con ID:", partnerId);
 
-                // Si no hay lista de correo o no hay email, terminamos aquí
-                if (!mailingListId || !leadData.email) {
+                // Si no hay lista de correo, terminamos aquí
+                if (!mailingListId) {
                     return resolve(partnerId);
                 }
 
-                // Si hay lista de correo y email, lo suscribimos a la lista en mailing.contact
-                const mailingContactData = {
-                    name: leadData.nombre,
-                    email: leadData.email,
-                    list_ids: [[4, parseInt(mailingListId), 0]], // Odoo ORM trick: Link to existing related records
-                };
+                // Buscamos si el contacto de mailing ya existe
+                const mailingContactDomain = [];
+                // Para listas de correo, Odoo suele requerir un email sí o sí en mailing.contact
+                // Si no hay email, le asignaremos uno ficticio temporal para que pueda entrar en la lista 
+                // o pasamos de largo si prefieres que solo entren con email real.
+                const emailForMailing = leadData.email || `sin-email-${partnerId}@nodisponible.local`;
 
+                if (leadData.email) {
+                    mailingContactDomain.push(['email', '=', leadData.email]);
+                } else {
+                    // If no email, try to find by name, but it's less reliable for uniqueness
+                    mailingContactDomain.push(['name', '=', leadData.nombre]);
+                }
+
+                // Buscar en mailing.contact
                 this.objectClient.methodCall('execute_kw', [
                     this.db, this.uid, this.password,
-                    'mailing.contact', 'create',
-                    [mailingContactData]
-                ], (mailError, mailContactId) => {
-                    if (mailError) {
-                        console.error(`Error suscribiendo a lista ${mailingListId}:`, mailError);
-                        // Resolvemos igualmente el partnerId porque el partner SÍ se creó
-                        resolve(partnerId);
+                    'mailing.contact', 'search', [mailingContactDomain]
+                ], (errContact, contactIds) => {
+                    if (errContact) {
+                        console.error("Error buscando contacto de mailing:", errContact);
+                        return resolve(partnerId); // Continue even if mailing contact search fails
+                    }
+
+                    let contactId = contactIds && contactIds.length > 0 ? contactIds[0] : null;
+
+                    // Función interna para añadir a la suscripción
+                    const addToSubscription = (cid) => {
+                        this.objectClient.methodCall('execute_kw', [
+                            this.db, this.uid, this.password,
+                            'mailing.contact.subscription', 'search',
+                            [[['contact_id', '=', cid], ['list_id', '=', parseInt(mailingListId)]]]
+                        ], (errSub, subIds) => {
+                            if (errSub) {
+                                console.error("Error buscando suscripción existente:", errSub);
+                                return resolve(partnerId);
+                            }
+
+                            if (!subIds || subIds.length === 0) {
+                                this.objectClient.methodCall('execute_kw', [
+                                    this.db, this.uid, this.password,
+                                    'mailing.contact.subscription', 'create',
+                                    [{
+                                        contact_id: cid,
+                                        list_id: parseInt(mailingListId),
+                                        opt_out: false
+                                    }]
+                                ], (errCreateSub, newSubId) => {
+                                    if (errCreateSub) {
+                                        console.error(`Error creando suscripción para contacto ${cid} en lista ${mailingListId}:`, errCreateSub);
+                                    } else {
+                                        console.log(`Contacto ${cid} suscrito a la lista ${mailingListId} con ID: ${newSubId}`);
+                                    }
+                                    resolve(partnerId);
+                                });
+                            } else {
+                                console.log(`Contacto ${cid} ya suscrito a la lista ${mailingListId}.`);
+                                resolve(partnerId);
+                            }
+                        });
+                    };
+
+                    if (!contactId) {
+                        // Crear contacto de mailing
+                        this.objectClient.methodCall('execute_kw', [
+                            this.db, this.uid, this.password,
+                            'mailing.contact', 'create',
+                            [{
+                                name: leadData.nombre,
+                                email: emailForMailing
+                            }]
+                        ], (errCreate, newContactId) => {
+                            if (errCreate) {
+                                console.error("Error creando contacto de mailing:", errCreate);
+                                return resolve(partnerId);
+                            }
+                            console.log("Contacto de mailing creado con ID:", newContactId);
+                            addToSubscription(newContactId);
+                        });
                     } else {
-                        console.log(`Contacto suscrito a la lista ${mailingListId} con ID: ${mailContactId}`);
-                        resolve(partnerId);
+                        console.log("Contacto de mailing existente con ID:", contactId);
+                        addToSubscription(contactId);
                     }
                 });
             });

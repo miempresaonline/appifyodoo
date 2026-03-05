@@ -6,7 +6,7 @@ const client = new ApifyClient({
 });
 
 async function main() {
-    const actorId = 'compass/google-maps-extractor';
+    const actorId = 'compass/crawler-google-places';
     console.log('Running Apify...');
     const run = await client.actor(actorId).call({
         searchStringsArray: ['Core Energia Alicante'],
@@ -15,7 +15,6 @@ async function main() {
         maxImages: 0,
         maxReviews: 0,
         scrapeContactDetails: true,
-        extractContactsFromWebsites: true,
         maxPagesPerWebsite: 3,
         websiteContactParams: {
             extractEmails: true,

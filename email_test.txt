@@ -1,0 +1,205 @@
+[dotenv@17.3.1] injecting env (6) from .env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Running Apify...
+[36mgoogle-maps-extractor runId:cPo54C3kLHsJUdXcH -> [39m2026-03-05T20:45:54.322Z ACTOR: Pulling container image of build 4zJuVElsZDnsr2of5 from registry.
+[36mgoogle-maps-extractor runId:cPo54C3kLHsJUdXcH -> [39m2026-03-05T20:45:54.324Z ACTOR: Creating container.
+[36mgoogle-maps-extractor runId:cPo54C3kLHsJUdXcH -> [39m2026-03-05T20:45:54.383Z ACTOR: Starting container.
+[36mgoogle-maps-extractor runId:cPo54C3kLHsJUdXcH -> [39m2026-03-05T20:45:54.384Z ACTOR: Running under "LIMITED_PERMISSIONS" permission level.
+[36mgoogle-maps-extractor runId:cPo54C3kLHsJUdXcH -> [39m2026-03-05T20:45:56.022Z [32mINFO[39m  System info[90m {"apifyVersion":"3.5.1","apifyClientVersion":"2.19.0","crawleeVersion":"3.14.1","osType":"Linux","nodeVersion":"v18.20.8"}[39m
+[36mgoogle-maps-extractor runId:cPo54C3kLHsJUdXcH -> [39m2026-03-05T20:45:56.405Z [32mINFO[39m  📡 Geolocation started
+[36mgoogle-maps-extractor runId:cPo54C3kLHsJUdXcH -> [39m2026-03-05T20:45:56.431Z [32mINFO[39m  📡 Geolocation finished
+[36mgoogle-maps-extractor runId:cPo54C3kLHsJUdXcH -> [39m2026-03-05T20:45:56.507Z [32mINFO[39m  [BG ENQUEUE] Finished enqueueing
+[36mgoogle-maps-extractor runId:cPo54C3kLHsJUdXcH -> [39m2026-03-05T20:45:56.646Z [32mINFO[39m [33m HttpCrawler:[39m Starting the crawler.
+[36mgoogle-maps-extractor runId:cPo54C3kLHsJUdXcH -> [39m2026-03-05T20:46:06.646Z [32mINFO[39m  Scraped in total 0 search pages.
+[36mgoogle-maps-extractor runId:cPo54C3kLHsJUdXcH -> [39m2026-03-05T20:46:16.591Z [32mINFO[39m  [Status message]: You can check all currently scraped places laid out on a map on: https://api.apify.com/v2/key-value-stores/xWtIcpulaYubAjOXe/records/results-map?signature=FwQEQZglrEc8q9b41KMM
+[36mgoogle-maps-extractor runId:cPo54C3kLHsJUdXcH -> [39m2026-03-05T20:46:16.646Z [32mINFO[39m  Scraped in total 0 search pages.
+[36mgoogle-maps-extractor runId:cPo54C3kLHsJUdXcH -> [39m2026-03-05T20:46:26.646Z [32mINFO[39m  Scraped in total 0 search pages.
+[36mgoogle-maps-extractor runId:cPo54C3kLHsJUdXcH -> [39m2026-03-05T20:46:36.646Z [32mINFO[39m  Scraped in total 0 search pages.
+[36mgoogle-maps-extractor runId:cPo54C3kLHsJUdXcH -> [39m2026-03-05T20:46:46.646Z [32mINFO[39m  Scraped in total 0 search pages.
+[36mgoogle-maps-extractor runId:cPo54C3kLHsJUdXcH -> [39m2026-03-05T20:46:56.130Z [32mINFO[39m  📊 0 places scraped
+[36mgoogle-maps-extractor runId:cPo54C3kLHsJUdXcH -> [39m2026-03-05T20:46:56.645Z [32mINFO[39m  Scraped in total 0 search pages.
+[36mgoogle-maps-extractor runId:cPo54C3kLHsJUdXcH -> [39m2026-03-05T20:46:56.647Z [32mINFO[39m [33m HttpCrawler:Statistics:[39m HttpCrawler request statistics:[90m {"requestAvgFailedDurationMillis":null,"requestAvgFinishedDurationMillis":null,"requestsFinishedPerMinute":0,"requestsFailedPerMinute":0,"requestTotalDurationMillis":0,"requestsTotal":0,"crawlerRuntimeMillis":60185,"retryHistogram":[]}[39m
+[36mgoogle-maps-extractor runId:cPo54C3kLHsJUdXcH -> [39m2026-03-05T20:46:56.674Z [32mINFO[39m [33m HttpCrawler:AutoscaledPool:[39m state[90m {"currentConcurrency":1,"desiredConcurrency":3,"systemStatus":{"isSystemIdle":true,"memInfo":{"isOverloaded":false,"limitRatio":0.2,"actualRatio":0},"eventLoopInfo":{"isOverloaded":false,"limitRatio":0.6,"actualRatio":0},"cpuInfo":{"isOverloaded":false,"limitRatio":0.4,"actualRatio":0},"clientInfo":{"isOverloaded":false,"limitRatio":0.3,"actualRatio":0}}}[39m
+[36mgoogle-maps-extractor runId:cPo54C3kLHsJUdXcH -> [39m2026-03-05T20:47:02.177Z [33mWARN[39m [33m HttpCrawler:[39m Reclaiming failed request back to the list or queue. Failed to get the first page of places: RequestError: Session closed without receiving a SETTINGS frame
+[36mgoogle-maps-extractor runId:cPo54C3kLHsJUdXcH -> [39m2026-03-05T20:47:02.179Z     at extractSearchJsonData (file:///usr/src/app/dist/src/routes/utils.js:155:15)[90m {"id":"QGG135oDlxG6Rc0","url":"https://www.google.com/maps/search/E-AVE%20Instalaci%C3%B3n%20de%20Placas%20Solares%20en%20Alicante?hl=es","retryCount":1}[39m
+[36mgoogle-maps-extractor runId:cPo54C3kLHsJUdXcH -> [39m2026-03-05T20:47:06.646Z [32mINFO[39m  Scraped in total 0 search pages.
+[36mgoogle-maps-extractor runId:cPo54C3kLHsJUdXcH -> [39m2026-03-05T20:47:16.647Z [32mINFO[39m  Scraped in total 0 search pages.
+[36mgoogle-maps-extractor runId:cPo54C3kLHsJUdXcH -> [39m2026-03-05T20:47:26.647Z [32mINFO[39m  Scraped in total 0 search pages.
+[36mgoogle-maps-extractor runId:cPo54C3kLHsJUdXcH -> [39m2026-03-05T20:47:32.817Z [32mINFO[39m  [Status message]: Finishing scraping because we reached max results --- https://www.google.com/maps/search/E-AVE%20Instalaci%C3%B3n%20de%20Placas%20Solares%20en%20Alicante?hl=es
+[36mgoogle-maps-extractor runId:cPo54C3kLHsJUdXcH -> [39m2026-03-05T20:47:36.654Z [32mINFO[39m  Scraped in total 0 search pages.
+[36mgoogle-maps-extractor runId:cPo54C3kLHsJUdXcH -> [39m2026-03-05T20:47:37.858Z [32mINFO[39m  🔍 [E-AVE Instalación de Placas Solares en Alicante][38.4477|-122.6715][SCROLL: 1]: Search page scraped: 1 unique, 1 seen, 1 paginations. No more places found on this page. (no next cursor) --- https://www.google.com/maps/search/E-AVE%20Instalaci%C3%B3n%20de%20Placas%20Solares%20en%20Alicante?hl=es
+[36mgoogle-maps-extractor runId:cPo54C3kLHsJUdXcH -> [39m2026-03-05T20:47:37.935Z [32mINFO[39m [33m HttpCrawler:[39m Final request statistics:[90m {"requestsFinished":1,"requestsFailed":0,"retryHistogram":[null,1],"requestAvgFailedDurationMillis":null,"requestAvgFinishedDurationMillis":32444,"requestsFinishedPerMinute":1,"requestsFailedPerMinute":0,"requestTotalDurationMillis":32444,"requestsTotal":1,"crawlerRuntimeMillis":101473}[39m
+[36mgoogle-maps-extractor runId:cPo54C3kLHsJUdXcH -> [39m2026-03-05T20:47:37.937Z [32mINFO[39m [33m HttpCrawler:[39m Finished! Total 1 requests: 1 succeeded, 0 failed.[90m {"terminal":true}[39m
+[36mgoogle-maps-extractor runId:cPo54C3kLHsJUdXcH -> [39m2026-03-05T20:47:37.996Z [32mINFO[39m  📊 1 places scraped | unique: 1 | seen: 1 | searchPages: 1 | paginations: 1
+[36mgoogle-maps-extractor runId:cPo54C3kLHsJUdXcH -> [39m2026-03-05T20:47:38.142Z [32mINFO[39m  📊 1 places scraped | unique: 1 | seen: 1 | searchPages: 1 | paginations: 1
+[36mgoogle-maps-extractor runId:cPo54C3kLHsJUdXcH -> [39m2026-03-05T20:47:38.144Z [32mINFO[39m  [Status message]: Scraping finished. You can view all scraped places laid out on a map on: https://api.apify.com/v2/key-value-stores/xWtIcpulaYubAjOXe/records/results-map?signature=FwQEQZglrEc8q9b41KMM. It can take some time to fully load for large datasets.
+Fetching dataset...
+{
+  "title": "EAVE | Instalación de Placas Solares en Alicante",
+  "price": null,
+  "categoryName": "Proveedor de equipos de energía solar",
+  "address": "Distrito Digital CV, Av. Jean Claude Combaldieu, s/n, Edificio 2 Despacho 111, 03008 Alicante, España",
+  "neighborhood": null,
+  "street": "Distrito Digital CV, Av. Jean Claude Combaldieu, s/n, Edificio 2 Despacho 111",
+  "city": "Alicante",
+  "postalCode": "03008",
+  "state": "Alicante",
+  "countryCode": "ES",
+  "website": "https://eave.es/placas-solares/comunidad-valenciana/",
+  "phone": "+34 671 57 33 75",
+  "phoneUnformatted": "+34671573375",
+  "claimThisBusiness": false,
+  "location": {
+    "lat": 38.3105578,
+    "lng": -0.5265476
+  },
+  "locatedIn": "Ciudad de la Luz Film Studios",
+  "plusCode": "8F6F+69 Alicante (Alacant), España",
+  "totalScore": 4.8,
+  "permanentlyClosed": false,
+  "temporarilyClosed": false,
+  "placeId": "ChIJPTc6SDp1LGsReK80tbqnM_o",
+  "categories": [
+    "Proveedor de equipos de energía solar"
+  ],
+  "fid": "0x6b2c753a483a373d:0xfa33a7bab534af78",
+  "cid": "18028938153640111992",
+  "reviewsCount": 131,
+  "reviewsDistribution": {
+    "oneStar": 7,
+    "twoStar": 0,
+    "threeStar": 0,
+    "fourStar": 3,
+    "fiveStar": 121
+  },
+  "imagesCount": 45,
+  "imageCategories": [
+    "Todas",
+    "Del propietario",
+    "Vídeos",
+    "Street View y 360°"
+  ],
+  "scrapedAt": "2026-03-05T20:47:32.742Z",
+  "googleFoodUrl": null,
+  "hotelAds": [],
+  "openingHours": [
+    {
+      "day": "jueves",
+      "hours": "8 AM to 6 PM"
+    },
+    {
+      "day": "viernes",
+      "hours": "8 AM to 6 PM"
+    },
+    {
+      "day": "sábado",
+      "hours": "Cerrado"
+    },
+    {
+      "day": "domingo",
+      "hours": "Cerrado"
+    },
+    {
+      "day": "lunes",
+      "hours": "8 AM to 6 PM"
+    },
+    {
+      "day": "martes",
+      "hours": "8 AM to 6 PM"
+    },
+    {
+      "day": "miércoles",
+      "hours": "8 AM to 6 PM"
+    }
+  ],
+  "peopleAlsoSearch": [
+    {
+      "category": "También se buscó",
+      "title": "Solarea TECH",
+      "reviewsCount": 136,
+      "totalScore": 5
+    },
+    {
+      "category": "También se buscó",
+      "title": "Betasolar",
+      "reviewsCount": 26,
+      "totalScore": 5
+    },
+    {
+      "category": "También se buscó",
+      "title": "Luzentum",
+      "reviewsCount": 117,
+      "totalScore": 5
+    },
+    {
+      "category": "También se buscó",
+      "title": "Solar Works Instalaciones Placas Solares",
+      "reviewsCount": 66,
+      "totalScore": 4.6
+    },
+    {
+      "category": "También se buscó",
+      "title": "Aquavatio",
+      "reviewsCount": 12,
+      "totalScore": 5
+    }
+  ],
+  "placesTags": [],
+  "reviewsTags": [
+    {
+      "title": "cargador",
+      "count": 20
+    },
+    {
+      "title": "tesla",
+      "count": 10
+    },
+    {
+      "title": "garaje",
+      "count": 7
+    },
+    {
+      "title": "eficiente",
+      "count": 6
+    },
+    {
+      "title": "comunicación",
+      "count": 5
+    },
+    {
+      "title": "explicación",
+      "count": 5
+    },
+    {
+      "title": "gestión",
+      "count": 5
+    },
+    {
+      "title": "perfección",
+      "count": 2
+    },
+    {
+      "title": "híbrido",
+      "count": 2
+    },
+    {
+      "title": "schuko",
+      "count": 2
+    }
+  ],
+  "additionalInfo": {
+    "Accesibilidad": [
+      {
+        "Estacionamiento accesible para personas en silla de ruedas": true
+      }
+    ]
+  },
+  "gasPrices": [],
+  "url": "https://www.google.com/maps/search/?api=1&query=EAVE%20%7C%20Instalaci%C3%B3n%20de%20Placas%20Solares%20en%20Alicante&query_place_id=ChIJPTc6SDp1LGsReK80tbqnM_o",
+  "searchPageUrl": "https://www.google.com/maps/search/E-AVE%20Instalaci%C3%B3n%20de%20Placas%20Solares%20en%20Alicante?hl=es",
+  "searchString": "E-AVE Instalación de Placas Solares en Alicante",
+  "language": "es",
+  "rank": 1,
+  "isAdvertisement": false,
+  "imageUrl": "https://lh3.googleusercontent.com/p/AF1QipMkTYYdclNjnaFMkzLn_b1Vq50x8cPoMy5A52Td=w408-h272-k-no",
+  "kgmid": "/g/11vxqwffnt"
+}
