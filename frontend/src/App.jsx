@@ -14,6 +14,7 @@ function App() {
   const [message, setMessage] = useState('');
   const [mailingLists, setMailingLists] = useState([]);
   const [selectedListId, setSelectedListId] = useState('');
+  const [selectedLeads, setSelectedLeads] = useState(new Set());
 
   // Cargar listas de correo al montar el componente
   useEffect(() => {
@@ -55,6 +56,7 @@ function App() {
             setTimeout(poll, 4000); // Sondear cada 4 segundos
           } else if (job.status === 'done') {
             setLeads(job.leads || []);
+            setSelectedLeads(new Set(job.leads?.map(l => l.id) || []));
             setMessage(`✅ Scraping completado. Encontrados ${job.leads?.length} leads.`);
             setIsScraping(false);
           } else if (job.status === 'error') {
@@ -79,17 +81,24 @@ function App() {
   };
 
   const handleExportOdoo = async () => {
-    if (leads.length === 0) return;
+    const leadsToExport = leads.filter(l => selectedLeads.has(l.id));
+    if (leadsToExport.length === 0) {
+      setMessage("⚠️ Selecciona al menos un lead para exportar.");
+      return;
+    }
     setIsExporting(true);
-    setMessage(`⏳ Exportando ${leads.length} leads a Odoo...`);
+    setMessage(`⏳ Exportando ${leadsToExport.length} leads a Odoo...`);
 
     try {
-      const response = await axios.post(`${API_URL}/export-odoo`, { leads, mailingListId: selectedListId });
-      const results = response.data.results || [];
-      const successCount = results.filter(r => r.status === 'success').length;
+      const response = await axios.post(`${API_URL}/export-odoo`, { leads: leadsToExport, mailingListId: selectedListId });
+      const exportedResults = response.data.results || [];
+      const successCount = exportedResults.filter(r => r.status === 'success').length;
 
       // Actualizamos el estado de los leads localmente
-      setLeads(results);
+      setLeads(prev => prev.map(l => {
+        const exported = exportedResults.find(r => r.id === l.id);
+        return exported ? exported : l;
+      }));
       setMessage(`✅ Exportación finalizada. ${successCount} exportados a Odoo de forma exitosa.`);
     } catch (error) {
       console.error(error);
@@ -178,6 +187,9 @@ function App() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
               <h2 style={{ fontSize: '1.5rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Database size={24} color="var(--accent-color)" /> Leads Encontrados ({leads.length})
+                <span style={{ fontSize: '1rem', color: 'var(--text-secondary)' }}>
+                  ({selectedLeads.size} seleccionados)
+                </span>
               </h2>
               <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
                 <button
@@ -218,6 +230,17 @@ function App() {
               <table className="custom-table">
                 <thead>
                   <tr>
+                    <th style={{ width: '40px', textAlign: 'center' }}>
+                      <input
+                        type="checkbox"
+                        checked={selectedLeads.size === leads.length && leads.length > 0}
+                        onChange={() => {
+                          if (selectedLeads.size === leads.length) setSelectedLeads(new Set());
+                          else setSelectedLeads(new Set(leads.map(l => l.id)));
+                        }}
+                        style={{ cursor: 'pointer' }}
+                      />
+                    </th>
                     <th>Empresa</th>
                     <th>Contacto</th>
                     <th>Presencia Digital</th>
@@ -226,14 +249,32 @@ function App() {
                 </thead>
                 <tbody>
                   {leads.map((lead) => (
-                    <tr key={lead.id}>
+                    <tr key={lead.id} style={{ opacity: selectedLeads.has(lead.id) ? 1 : 0.6 }}>
+                      <td style={{ textAlign: 'center' }}>
+                        <input
+                          type="checkbox"
+                          checked={selectedLeads.has(lead.id)}
+                          onChange={() => {
+                            const newSelection = new Set(selectedLeads);
+                            if (newSelection.has(lead.id)) newSelection.delete(lead.id);
+                            else newSelection.add(lead.id);
+                            setSelectedLeads(newSelection);
+                          }}
+                          style={{ cursor: 'pointer' }}
+                        />
+                      </td>
                       <td style={{ fontWeight: '500' }}>{lead.nombre}</td>
                       <td>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                           {lead.telefono && (
-                            <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+                            <a
+                              href={`https://wa.me/${lead.telefono.replace(/\D/g, '')}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.9rem', color: '#25D366', textDecoration: 'none', fontWeight: 'bold' }}
+                            >
                               <Phone size={14} /> {lead.telefono}
-                            </span>
+                            </a>
                           )}
                           {lead.email && (
                             <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.9rem', color: 'var(--accent-color)' }}>
