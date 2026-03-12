@@ -64,8 +64,21 @@ app.post('/api/scrape', async (req, res) => {
                 // Usamos un actor genérico de Maps
                 const actorId = 'compass/google-maps-extractor';
 
+                let searchTerm = query;
+                let locationQuery = '';
+
+                // Intentar separar el término de búsqueda de la ubicación (ej: "Electricistas en Madrid")
+                const enMatch = query.match(/(.+)\s+en\s+(.+)/i);
+                if (enMatch) {
+                    searchTerm = enMatch[1].trim();
+                    locationQuery = enMatch[2].trim();
+                }
+
+                console.log(`[Job ${jobId}] Ejecutando actor con searchTerm: "${searchTerm}" y locationQuery: "${locationQuery}"`);
+
                 const run = await apifyClient.actor(actorId).call({
-                    searchStringsArray: [query],
+                    searchStringsArray: [searchTerm],
+                    locationQuery: locationQuery,
                     maxCrawledPlacesPerSearch: parseInt(maxResults),
                     language: 'es',
                     maxImages: 0,

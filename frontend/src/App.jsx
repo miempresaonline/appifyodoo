@@ -15,6 +15,7 @@ function App() {
   const [mailingLists, setMailingLists] = useState([]);
   const [selectedListId, setSelectedListId] = useState('');
   const [selectedLeads, setSelectedLeads] = useState(new Set());
+  const [whatsappTemplate, setWhatsappTemplate] = useState('');
 
   // Cargar listas de correo al montar el componente
   useEffect(() => {
@@ -109,7 +110,12 @@ function App() {
   };
 
   const exportCSV = () => {
-    const csvData = leads.map(l => ({
+    const leadsToExport = leads.filter(l => selectedLeads.has(l.id));
+    if (leadsToExport.length === 0) {
+      setMessage("⚠️ Selecciona al menos un lead para exportar.");
+      return;
+    }
+    const csvData = leadsToExport.map(l => ({
       Nombre: l.nombre,
       Telefono: l.telefono,
       Email: l.email,
@@ -172,6 +178,19 @@ function App() {
               {isScraping ? <Loader2 className="animate-spin" size={20} /> : <Search size={20} />}
               {isScraping ? 'Extrayendo...' : 'Generar Leads'}
             </button>
+
+            <div style={{ width: '100%', marginTop: '16px' }}>
+              <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                Plantilla Mensaje WhatsApp (Se enviará como: Hola [Nombre], [Tu mensaje])
+              </label>
+              <textarea
+                className="custom-input"
+                style={{ height: '80px', paddingTop: '10px', resize: 'vertical' }}
+                placeholder="Escribe el resto del mensaje aquí... (Soporta saltos de línea)"
+                value={whatsappTemplate}
+                onChange={(e) => setWhatsappTemplate(e.target.value)}
+              />
+            </div>
           </form>
 
           {message && (
@@ -268,7 +287,7 @@ function App() {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                           {lead.telefono && (
                             <a
-                              href={`https://wa.me/${lead.telefono.replace(/\D/g, '')}`}
+                              href={`https://wa.me/${lead.telefono.replace(/\D/g, '')}?text=${encodeURIComponent(`Hola ${lead.nombre},\n${whatsappTemplate}`)}`}
                               target="_blank"
                               rel="noopener noreferrer"
                               style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.9rem', color: '#25D366', textDecoration: 'none', fontWeight: 'bold' }}
